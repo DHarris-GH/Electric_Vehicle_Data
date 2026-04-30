@@ -324,7 +324,7 @@ Two Random Forest models are built:
   - Creates final datasets
   - Runs models and creates visualizations
 
-## Visualizations
+## Visualizations (Using Professor R Code)
 
 ### EV Demand vs Charging Supply (All Years)
 ![Static Plot](images/EV_static_all_years.png)
