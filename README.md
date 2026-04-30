@@ -5,12 +5,12 @@ Selma Sulejmanovic and Dawn Harris
 
 ##  Overview
 
-This project builds a **data pipeline and modeling framework** to analyze the relationship between:
+Our project builds a **data pipeline** to evaluate the relationship between:
 
 - Electric Vehicle (EV) adoption  
 - Charging infrastructure availability  
 
-The pipeline processes raw datasets, cleans and merges them, and applies **Random Forest models** to determine:
+Our pipeline attempts to process raw datasets, clean and merge them, to then apply to **Random Forest models** in order to figure out:
 
 - Whether charging infrastructure influences EV adoption  
 - Whether EV adoption influences infrastructure expansion  
@@ -18,17 +18,17 @@ The pipeline processes raw datasets, cleans and merges them, and applies **Rando
 
 ##  Why This Matters
 
-The transition to electric vehicles (EVs) is a critical part of reducing carbon emissions and building a more sustainable transportation system. However, one major question remains:
+The shift to EVs is essential in transitioning to a cleaner transporation system. By cutting carbon emissions, the United States can establish, and move toward, a more eco-friendly and sustainable system.
 
 > **Does charging infrastructure drive EV adoption, or does EV demand drive infrastructure growth?**
 
-Understanding this relationship helps policymakers, urban planners, and companies make smarter investments in the future of transportation.
+Obtaining insight on the correlation between the two helps policymakers and companies to data-driven investments and allocate funds toward environmentally friendly descisions. 
 
 ---
 
 ##  Project Structure
 
-```text
+```
 ev_sd/
 ├── data/
 │   ├── raw/        # Original downloaded datasets
@@ -57,7 +57,6 @@ ev_sd/
 │
 └── README.md
 ```
-
 ---
 
 ##  Data Sources
@@ -99,8 +98,8 @@ ev_sd/
 - Critical for merging EV, charging, and population data
 
 ---
-## Pipeline Description
 
+## Pipeline Description
 
 ### 1. Data Acquisition (`01_download_datasets.py`)
 - Downloads all required datasets:
@@ -227,7 +226,36 @@ Creates time-based modeling features:
 - EV_per_10k_Lag1  
 - Stations_per_10k_Lag1  
 
----
+--
+
+## Dataset Columns
+
+Each row represents a **county-year observation (2020–2024)**.
+
+- **State** – Two-letter state abbreviation  
+- **County** – County name
+- **Year** – Year of observation  
+
+- **EV_Count** – Total number of registered electric vehicles in the county  
+- **Population** – Total county population for that year  
+
+- **Charging_Station_Sites** – Number of charging station locations in the county  
+- **Charging_Ports** – Total number of charging ports (all types)  
+- **DC_Fast_Ports** – Number of fast chargers 
+- **Level2_Ports** – Number of slow chargers
+
+- **EV_per_Station** – Average number of EVs per charging station site  
+- **EV_per_Port** – Average number of EVs per charging port  
+
+- **Stations_per_10k_People** – Charging stations per 10,000 people  
+- **Ports_per_10k_People** – Charging ports per 10,000 people  
+- **EV_per_10k_People** – EV adoption per 10,000 people  
+
+- **EV_per_10k_Growth** – Year-over-year change in EV adoption per 10,000 people  
+- **Stations_per_10k_Growth** – Year-over-year change in stations per 10,000 people  
+
+- **EV_per_10k_Lag1** – Previous year’s EV adoption per 10,000 people  
+- **Stations_per_10k_Lag1** – Previous year’s stations per 10,000 people 
 
 ### 13. Modeling (`13_run_random_forest.py`)
 
@@ -252,7 +280,7 @@ Two Random Forest models are built:
 - **Year: 0.051 (minimal effect)**  
 
 #### Interpretation:
-- EV growth is **primarily driven by existing EV adoption**, indicating strong momentum in adoption trends  
+- EV growth is **mostly driven by existing EV adoption**, indicating strong momentum in adoption trends  
 - Charging infrastructure does have an effect, but it is **significantly smaller than existing demand**  
 - This suggests that while infrastructure supports adoption, it is **not the primary driver**
 
@@ -269,10 +297,9 @@ Two Random Forest models are built:
 #### Interpretation:
 - Although EV adoption appears to have moderate importance, the **model performs worse than a simple baseline**, meaning it does not explain infrastructure growth effectively  
 - This indicates that infrastructure expansion is **not strongly driven by EV demand alone**  
-- Instead, infrastructure growth is likely influenced by:
+- Infrastructure growth could probably be influenced by:
   - government policy  
   - funding and incentives  
-  - long-term planning decisions  
 
 ---
 
@@ -286,6 +313,13 @@ Two Random Forest models are built:
   - **Ports_per_10k_People (supply)**
 
 ---
+
+### `pipeline.sh`
+- Runs all scripts
+  - Downloads all datasets
+  - Cleans and merges 
+  - Creates final datasets
+  - Runs models and creates visualizations
 
 ## Visualizations
 
@@ -338,20 +372,9 @@ Install required packages:
 ```bash
 pip install pandas gdown scikit-learn seaborn matplotlib pillow
 
-python3 scripts/01_download_datasets.py
-python3 scripts/02_data_cleaning.py
-python3 scripts/03_aggregate_ev_by_county.py
-python3 scripts/04_merge_ev_states.py
-python3 scripts/05_county_population_cleaning.py
-python3 scripts/06_reshape_population_by_year.py
-python3 scripts/07_clean_charging_stations.py
-python3 scripts/08_count_charging_stations_by_county.py
-python3 scripts/09_aggregate_charging_by_county_year.py
-python3 scripts/10_merge_all_data.py
-python3 scripts/11_fill_missing_county_years.py
-python3 scripts/12_create_growth_features.py
-python3 scripts/13_run_random_forest.py
-python3 scripts/14_visualize_animation.py
+
+chmod +x pipeline.sh
+./pipeline.sh
 ```
 
 ### Reflection
@@ -359,8 +382,8 @@ python3 scripts/14_visualize_animation.py
 ## (Some) Large Obstacles We Encountered
 
 ### Data Acquisition & Formatting
-- Some datasets were initially downloaded as **HTML instead of CSV**, requiring validation and re-downloading  
-- Converting files to CSV caused **leading zeros in ZIP codes to be dropped**, which broke geographic joins  
+- Some datasets were initially downloaded as **HTML instead of CSV** 
+- Converting files to CSV caused **leading zeros in ZIP codes to be dropped** 
 
 ---
 
@@ -376,7 +399,7 @@ python3 scripts/14_visualize_animation.py
 - EV data was provided at the **ZIP-code level**, while other datasets were at the **county level**  
 - Required building a multi-step mapping:
   - ZIP → county FIPS (crosswalk)
-  - FIPS → county name (lookup table)  
+  - FIPS → county name (lookup table) 
 - Some ZIP codes map to multiple counties, requiring the use of **population-based weighting (TOT_RATIO)**  
 - In mulitple instances, we came across old FIPs codes, and had to thus create our own look-up table.
 
@@ -390,16 +413,15 @@ python3 scripts/14_visualize_animation.py
 ---
 
 ### Data Cleaning & Missing Information
-- The population dataset initially had **missing or unclear column headers**  
-- Required extensive cleaning and reshaping from **wide → long format**  
-- Missing county-year combinations required building a **complete panel dataset (2020–2024)**  
+- The population dataset initially had **missing/unclear column headers**  
+- Missing county-year combinations required building  
+- In counties with lower populations, no EV counts were registered, and thus the year was left out; required a script to still include years with no EV counts and just list it with '0' 
 
 ---
 
 ### Time-Based Construction
 - Charging station data is event-based (open dates), not yearly  
 - Required converting into a **cumulative yearly dataset** to match EV trends  
-- Ensuring correct alignment of lag and growth features was critical for modeling  
 
 ---
 
