@@ -1,0 +1,24 @@
+# Ignore all raw and intermediate data
+data/raw/
+data/cleaned/
+
+# Ignore all CSV files by default
+*.csv
+
+# BUT keep final datasets
+!data/final/master_dataset_full.csv
+!data/final/master_dataset_model.csv
+
+# Ignore specific script
+scripts/14_east_coast_subset.py
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Mac files
+.DS_Store
+
+# Temporary files
+*.log
+*.tmp
