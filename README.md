@@ -65,6 +65,8 @@ ev_sd/
 ##  Data Sources
 
 ### 1. EV Registration Data
+- Link: https://www.atlasevhub.com/market-data/state-ev-registration-data/#data
+- Date accessed: 03-31-26
 - State-level EV registration CSV files  
 - Includes:
   - ZIP codes  
@@ -74,6 +76,17 @@ ev_sd/
 ---
 
 ### 2. Charging Station Data
+- Link: https://afdc.energy.gov/data_download
+- Filters Used:
+  - Dataset → Alternative fuel stations
+  - Timeframe → Current
+  - Fuel Type → Electric 
+  - Station Access → Public
+  - Station Status → Open
+  - Country → United States
+  - State/Province → All
+  - File Format → CSV 
+- Data accessed: 03-31-26
 - Includes:
   - station locations  
   - number of ports
@@ -83,12 +96,15 @@ ev_sd/
 ---
 
 ### 3. County Population Data
+- Link: https://www.huduser.gov/portal/datasets/usps_crosswalk.html
+- Data accessed: 04-07-26
 - U.S. Census dataset  
 - Includes population from **2020–2024**
 
 ---
 
 ### 4. ZIP-to-County Crosswalk
+- Manually created
 - Maps **ZIP codes → county FIPS codes**
 - Used to convert EV registration data (ZIP-level) into **county-level data**
 - When multiple counties are associated with a ZIP, the mapping uses the **highest population ratio (TOT_RATIO)**
@@ -317,7 +333,10 @@ Two Random Forest models are built:
 
 ---
 
-### `pipeline.sh`
+### `pipeline.slurm`
+- SLURM Job
+  - SBATCH
+  - Load environment
 - Runs all scripts
   - Downloads all datasets
   - Cleans and merges 
@@ -369,15 +388,24 @@ This visualization compares **demand (EV adoption)** with **supply (charging inf
 
 ### Requirements
 Make sure your environment has Python 3 installed.
+Versions needed:
+- python 3.12.7 
+- pandas 2.3.3
+- gdown 5.2.2
+- scikit-learn 1.6.1
+- matplotlib 3.9.4
+- seaborn 0.13.2
+- pillow 11.3.0
 
-Install required packages:
+Install required packages/create environment and run SLURM job:
 
 ```bash
-pip install pandas gdown scikit-learn seaborn matplotlib pillow
+module load miniforge3
+conda create -n ev_env python=3.9
+conda activate ev_env
+pip install pandas gdown scikit-learn seaborn matplotlib pillow requests
 
-
-chmod +x pipeline.sh
-./pipeline.sh
+sbatch pipeline.slurm
 ```
 
 ### Reflection
@@ -386,7 +414,6 @@ chmod +x pipeline.sh
 
 ### Data Acquisition & Formatting
 - Some datasets were initially downloaded as **HTML instead of CSV** 
-- Converting files to CSV caused **leading zeros in ZIP codes to be dropped** 
 
 ---
 
