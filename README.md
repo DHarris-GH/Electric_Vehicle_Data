@@ -398,6 +398,7 @@ Versions needed:
 - matplotlib 3.9.4
 - seaborn 0.13.2
 - pillow 11.3.0
+- requests 2.25.1
 
 Install required packages/create environment and run SLURM job:
 
