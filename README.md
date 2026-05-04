@@ -55,7 +55,7 @@ ev_sd/
 │   ├── EV_static_all_years.png
 │   └── EV_animation.gif
 │
-├── pipeline.sh      # Runs entire pipeline end-to-end
+├── pipeline.slurm     # Runs entire pipeline end-to-end
 ├── .gitignore
 └── README.md
 
