@@ -96,15 +96,16 @@ ev_sd/
 ---
 
 ### 3. County Population Data
-- Link: https://www.huduser.gov/portal/datasets/usps_crosswalk.html
-- Data accessed: 04-07-26
+- Link: https://www.census.gov/data/tables/time-series/demo/popest/2020s-counties-total.html
+- Date accessed: 04-20-26
 - U.S. Census dataset  
-- Includes population from **2020–2024**
+- Includes population from **2020–2025** (we used 2020-2024)
 
 ---
 
 ### 4. ZIP-to-County Crosswalk
-- Manually created
+- Link: https://www.huduser.gov/portal/datasets/usps_crosswalk.html
+- Date accessed: 04-07-26
 - Maps **ZIP codes → county FIPS codes**
 - Used to convert EV registration data (ZIP-level) into **county-level data**
 - When multiple counties are associated with a ZIP, the mapping uses the **highest population ratio (TOT_RATIO)**
@@ -112,6 +113,7 @@ ev_sd/
 ---
 
 ### 5. County Lookup Table
+- Manually created
 - Maps **county FIPS codes → county names**
 - Ensures consistent county naming across datasets
 - Critical for merging EV, charging, and population data
